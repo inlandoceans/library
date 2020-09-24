@@ -1,7 +1,5 @@
 const container = document.getElementById('container'); 
-let delBook = document.querySelectorAll('button.delBook');
 const formSubmit = document.querySelector('#bookForm');
-
 
 let myLibrary = [];
 
@@ -12,21 +10,54 @@ function Book(title, author, pages, read) {
   this.read = read
 }
 
+// Book.prototype.toggleRead = function(){
+//   const readTog = document.querySelector('.readBtn');
+//   readTog.addEventListener('change', function(){
+//   if(readTog.checked = true){
+//     this.read = false;
+//   }
+//   else {
+//     this.read = true;
+//   }
+// })
+// }
+
 function addBookToLibrary(title, author, pages, read) {
   let book = new Book(title, author, pages, read);
   myLibrary.push(book);
+  
+// Refreshes nodes to avoid duplicates
+  refresh ();
+}
+
+// Function to init remove button
+function removeBtn(){
+  delBtn = document.querySelectorAll('button.delBook');
+  delBtn.forEach(button => {
+    button.addEventListener('click', remove)
+  })
+  }
+
+// Removes item from array and refreshes screen
+function remove(){
+  const index = this.parentNode.dataset.index;
+  myLibrary.splice(index, 1);
+  
+  refresh();
+}
+
+// Ensures no duplicates
+function refresh(){
   while (container.hasChildNodes()){
     container.removeChild(container.firstChild)
   }
-  myLibrary.forEach(displayBook);
-  delBook = document.querySelectorAll('button.delBook');
+  myLibrary.forEach(displayBook)
 }
 
-addBookToLibrary('The Hobbit', 'J.R.R. Tolkien', '295', 'Not read yet.');
-addBookToLibrary('1984', 'G. Orwell', '184', 'Read.');
 
+// Inserting book content into HTML
 function displayBook(item){
-  // Inserting book content into HTML
+  
   const div = document.createElement('div');
   div.classList.add('card-book');
   
@@ -46,9 +77,15 @@ function displayBook(item){
   div.appendChild(pPages);
 
   let pRead = document.createElement('p');
+  let readButton = document.createElement('input');
   pRead.classList.add('book-read');
+  readButton.classList.add('readBtn');
+  readButton.type = "checkbox";
+     
   pRead.textContent = `Status: ${item['read']}`;
   div.appendChild(pRead);
+  div.appendChild(readButton);
+
 
   //button to remove books
   let delBook = document.createElement('button');
@@ -57,26 +94,32 @@ function displayBook(item){
   div.appendChild(delBook);
 
   container.appendChild(div);
+  removeBtn()
+  checkToggle()
+
+  function checkToggle(){
+    if(this.read){
+      readButton.checked = true
+    }
+  }
 }
 
-// Get input from form
+
+
+
+// Get input from form and adds it to library
 formSubmit.addEventListener('submit', (e) => {
   e.preventDefault();
  
   const title = formSubmit.querySelector('#title').value;
   const author = formSubmit.querySelector('#author').value;
   const pages = formSubmit.querySelector('#pages').value;
-  let read = formSubmit.querySelector('#read');
-  if(read.checked == true) {
-    read = 'read'
-    } else {
-    read = 'not read yet'
-    }
-
+  let read = formSubmit.querySelector('#read').checked;
+    
   addBookToLibrary(title, author, pages, read);
 
 });
 
-
-
-console.table(myLibrary);
+//test books
+addBookToLibrary('The Hobbit', 'J.R.R. Tolkien', '295', true);
+addBookToLibrary('1984', 'G. Orwell', '184', false);
