@@ -1,5 +1,5 @@
 const container = document.getElementById('container'); 
-const delBook = document.querySelectorAll('button.delBook');
+let delBook = document.querySelectorAll('button.delBook');
 const formSubmit = document.querySelector('#bookForm');
 
 
@@ -18,8 +18,8 @@ function addBookToLibrary(title, author, pages, read) {
   while (container.hasChildNodes()){
     container.removeChild(container.firstChild)
   }
-
   myLibrary.forEach(displayBook);
+  delBook = document.querySelectorAll('button.delBook');
 }
 
 addBookToLibrary('The Hobbit', 'J.R.R. Tolkien', '295', 'Not read yet.');
@@ -59,9 +59,6 @@ function displayBook(item){
   container.appendChild(div);
 }
 
-// Cycle through library and pass to display
-
-
 // Get input from form
 formSubmit.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -69,9 +66,14 @@ formSubmit.addEventListener('submit', (e) => {
   const title = formSubmit.querySelector('#title').value;
   const author = formSubmit.querySelector('#author').value;
   const pages = formSubmit.querySelector('#pages').value;
-  
+  let read = formSubmit.querySelector('#read');
+  if(read.checked == true) {
+    read = 'read'
+    } else {
+    read = 'not read yet'
+    }
+
   addBookToLibrary(title, author, pages, read);
-  console.log("Form submitted")
 
 });
 
